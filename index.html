@@ -1,1 +1,837 @@
-done.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BigFuckingServers — Coming Soon</title>
+  
+  <!-- Google Fonts: Inter for ultra-modern, sleek typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome for flat tech icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* GLOBAL RESET & VARIABLES */
+    :root {
+      --electric-blue: #0000fe;
+      --pure-black: #000000;
+      --white: #ffffff;
+      --gray-text: #a0a0a0;
+      --blue-glow: 0 0 20px rgba(0, 0, 254, 0.6);
+      --blue-glow-strong: 0 0 35px rgba(0, 0, 254, 0.9);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: var(--pure-black);
+      color: var(--white);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.5;
+      position: relative;
+    }
+
+    /* CANVAS BACKGROUND */
+    #network-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none; 
+      opacity: 0.8; /* Slightly brighter to show the details */
+    }
+
+    /* CONTAINER */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      /* Backdrop to ensure text remains legible over the busy map */
+      background: radial-gradient(circle at center, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 100%);
+    }
+
+    /* 1. LOGO & HEADER */
+    .logo-wrapper {
+      margin-bottom: 1.5rem;
+      animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      opacity: 0;
+    }
+
+    .logo-wrapper img {
+      max-width: 320px;
+      width: 100%;
+      height: auto;
+      filter: drop-shadow(0 0 20px rgba(0, 0, 254, 0.5));
+      transition: transform 0.3s ease, filter 0.3s ease;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 12px;
+      padding: 10px;
+      backdrop-filter: blur(4px);
+    }
+
+    .logo-wrapper img:hover {
+      transform: scale(1.03);
+      filter: drop-shadow(0 0 35px rgba(0, 0, 254, 0.9));
+    }
+
+    .domain-badge {
+      font-size: 0.9rem;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--electric-blue);
+      border: 1px solid var(--electric-blue);
+      background: rgba(0, 0, 0, 0.8);
+      padding: 0.4rem 1.2rem;
+      border-radius: 50px;
+      margin-bottom: 3rem;
+      display: inline-block;
+      animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+      opacity: 0;
+      box-shadow: 0 0 15px rgba(0, 0, 254, 0.2);
+      backdrop-filter: blur(4px);
+    }
+
+    /* 2. MAIN HERO TEXT */
+    .hero-title {
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 900;
+      line-height: 1.2;
+      max-width: 1000px;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+      opacity: 0;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      text-shadow: 0 4px 20px rgba(0,0,0,1);
+    }
+
+    .hero-title span {
+      color: var(--electric-blue);
+      text-shadow: var(--blue-glow), 0 4px 20px rgba(0,0,0,1);
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1.1rem, 2vw, 1.4rem);
+      font-weight: 600;
+      color: var(--white);
+      max-width: 900px;
+      margin-bottom: 4rem;
+      animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+      opacity: 0;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      text-shadow: 0 2px 10px rgba(0,0,0,1);
+    }
+
+    .hero-subtitle span {
+      color: var(--electric-blue);
+    }
+
+    /* 3. STATS GRID */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      width: 100%;
+      margin-bottom: 4rem;
+    }
+
+    .stat-card {
+      background: rgba(0, 0, 0, 0.85); 
+      border: 1px solid rgba(0, 0, 254, 0.4);
+      padding: 3rem 2rem;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s ease;
+      animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
+      opacity: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(8px);
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--electric-blue);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+
+    .stat-card:hover {
+      border-color: var(--electric-blue);
+      box-shadow: var(--blue-glow-strong);
+      transform: translateY(-5px);
+      background: rgba(0, 0, 254, 0.05); 
+    }
+
+    .stat-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .stat-icon {
+      font-size: 2.5rem;
+      color: var(--electric-blue);
+      margin-bottom: 1.5rem;
+      filter: drop-shadow(0 0 10px rgba(0, 0, 254, 0.5));
+    }
+
+    .stat-number {
+      font-size: clamp(2.5rem, 4vw, 3.5rem);
+      font-weight: 900;
+      color: var(--white);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.03em;
+    }
+
+    .stat-number .unit {
+      font-size: 1.2rem;
+      color: var(--electric-blue);
+      font-weight: 800;
+      margin-left: 4px;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--gray-text);
+      font-weight: 600;
+    }
+
+    /* 4. STATUS UPDATE BANNER */
+    .status-banner {
+      width: 100%;
+      max-width: 900px;
+      border: 1px dashed var(--electric-blue);
+      background: rgba(0, 0, 0, 0.8);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.45s forwards;
+      opacity: 0;
+      box-shadow: inset 0 0 20px rgba(0, 0, 254, 0.1);
+      backdrop-filter: blur(6px);
+    }
+
+    .status-banner i {
+      color: var(--electric-blue);
+      font-size: 1.5rem;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.95); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .status-text {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--white);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .status-text span {
+      color: var(--electric-blue);
+    }
+
+    /* 5. SPEED TIERS */
+    .tiers-section {
+      width: 100%;
+      margin-bottom: 5rem;
+    }
+
+    .section-title {
+      font-size: 1.2rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gray-text);
+      margin-bottom: 2rem;
+      font-weight: 600;
+      animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+      opacity: 0;
+      text-shadow: 0 2px 10px rgba(0,0,0,1);
+    }
+
+    .tiers-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
+      opacity: 0;
+    }
+
+    .tier-badge {
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(0, 0, 254, 0.5);
+      color: var(--white);
+      padding: 1rem 2rem;
+      border-radius: 4px;
+      font-size: 1.2rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      transition: all 0.3s ease;
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(4px);
+    }
+
+    .tier-badge span {
+      color: var(--electric-blue);
+    }
+
+    .tier-badge:hover {
+      background: var(--electric-blue);
+      color: var(--white);
+      box-shadow: var(--blue-glow);
+      border-color: var(--electric-blue);
+      transform: scale(1.05);
+    }
+
+    .tier-badge:hover span {
+      color: var(--white);
+    }
+
+    /* 6. MANIFESTO / QUOTE BLOCKS */
+    .quote-block {
+      max-width: 1000px;
+      margin-bottom: 3rem;
+      font-size: clamp(1.4rem, 2.5vw, 2rem);
+      font-weight: 800;
+      line-height: 1.4;
+      animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.7s forwards;
+      opacity: 0;
+      text-shadow: 0 4px 20px rgba(0,0,0,1);
+    }
+
+    .quote-block .highlight {
+      color: var(--electric-blue);
+      text-shadow: var(--blue-glow), 0 4px 20px rgba(0,0,0,1);
+    }
+
+    .sub-quote {
+      max-width: 800px;
+      font-size: 1.2rem;
+      color: var(--gray-text);
+      line-height: 1.6;
+      animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
+      opacity: 0;
+      font-weight: 400;
+      margin-bottom: 2rem;
+      text-shadow: 0 2px 10px rgba(0,0,0,1);
+      background: rgba(0,0,0,0.6);
+      padding: 1rem;
+      border-radius: 8px;
+    }
+
+    .sub-quote strong {
+      color: var(--white);
+      font-weight: 600;
+    }
+
+    /* 7. FOOTER & EMAIL */
+    .footer {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(0, 0, 254, 0.3);
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 1.5rem;
+      animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.9s forwards;
+      opacity: 0;
+      background: rgba(0,0,0,0.7);
+      border-radius: 8px;
+      padding-bottom: 2rem;
+      backdrop-filter: blur(4px);
+    }
+
+    .footer-domain {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .footer-domain i {
+      color: var(--electric-blue);
+      font-size: 1.2rem;
+    }
+
+    .footer-email {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--gray-text);
+      text-decoration: none;
+      font-size: 1.2rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+    }
+
+    .footer-email i {
+      color: var(--electric-blue);
+      font-size: 1.1rem;
+    }
+
+    .footer-email:hover {
+      color: var(--white);
+      background: rgba(0, 0, 254, 0.15);
+      text-shadow: 0 0 10px rgba(0, 0, 254, 0.8);
+    }
+
+    /* ANIMATION KEYFRAMES */
+    @keyframes fadeUp {
+      0% {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .container {
+        padding: 3rem 1.5rem;
+      }
+      .logo-wrapper img {
+        max-width: 240px;
+      }
+      .hero-subtitle {
+        margin-bottom: 3rem;
+      }
+      .tier-badge {
+        padding: 0.8rem 1.2rem;
+        font-size: 1rem;
+        flex: 1 1 40%;
+      }
+      .status-banner {
+        flex-direction: column;
+        text-align: center;
+        padding: 1rem;
+      }
+      .status-text {
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CANVAS FOR THE GLOBAL MAP & SERVER DATA NETWORK -->
+  <canvas id="network-canvas"></canvas>
+
+  <main class="container">
+    
+    <!-- LOGO -->
+    <div class="logo-wrapper">
+      <img src="/img/BFS_logo.JPEG" alt="BigFuckingServers Logo">
+    </div>
+    
+    <div class="domain-badge">BigFuckingServers.com</div>
+
+    <!-- HERO TEXT -->
+    <h1 class="hero-title">
+      Monster bare-metal dedicated servers engineered for <span>unyielding enterprise workloads.</span>
+    </h1>
+    
+    <h2 class="hero-subtitle">
+      Scalable IP transit capabilities up to <span>400 Gbps</span> unmetered per single pipe.
+    </h2>
+
+    <!-- STATS GRID -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <i class="fas fa-network-wired stat-icon"></i>
+        <div class="stat-number">10.1<span class="unit">TBPS</span></div>
+        <div class="stat-label">Avg Continuous Usage</div>
+      </div>
+
+      <div class="stat-card">
+        <i class="fas fa-globe stat-icon"></i>
+        <div class="stat-number">3000<span class="unit">+</span></div>
+        <div class="stat-label">IP Transit Locations</div>
+      </div>
+
+      <div class="stat-card">
+        <i class="fas fa-tachometer-alt stat-icon"></i>
+        <div class="stat-number">400<span class="unit">Gbps</span></div>
+        <div class="stat-label">MAX Port Speed</div>
+      </div>
+    </div>
+
+    <!-- STATUS UPDATE BANNER -->
+    <div class="status-banner">
+      <i class="fas fa-server"></i>
+      <div class="status-text">
+        Current Status: <span>Migrating all servers to a brand new data center.</span>
+      </div>
+    </div>
+
+    <!-- SPEED TIERS -->
+    <div class="tiers-section">
+      <div class="section-title">Massive Enterprise Hardware Tiers</div>
+      <div class="tiers-container">
+        <div class="tier-badge"><span>10</span> Gbps</div>
+        <div class="tier-badge"><span>20</span> Gbps</div>
+        <div class="tier-badge"><span>40</span> Gbps</div>
+        <div class="tier-badge"><span>50</span> Gbps</div>
+        <div class="tier-badge"><span>100</span> Gbps</div>
+        <div class="tier-badge"><span>200</span> Gbps</div>
+      </div>
+    </div>
+
+    <!-- QUOTES & MANIFESTO -->
+    <div class="quote-block">
+      "We are not for the little guys on the block, <br>
+      <span class="highlight">we are for the block owners!"</span>
+    </div>
+
+    <div class="sub-quote">
+      <strong>"No Limits. No Surprises."</strong> Our network is designed to move data fast, 24/7, anywhere in the world. We provide HUGE <strong>BLUECHIP</strong> enterprise level Dedicated Bare Metal Servers, Colocation, Full Racks, and IP Transit.
+    </div>
+
+    <!-- FOOTER & EMAIL -->
+    <div class="footer">
+      <div class="footer-domain">
+        <i class="fas fa-bolt"></i>
+        BigFuckingServers.com
+        <i class="fas fa-bolt"></i>
+      </div>
+      
+      <a href="mailto:sales@bigfuckingservers.com" class="footer-email">
+        <i class="fas fa-envelope"></i>
+        sales@bigfuckingservers.com
+      </a>
+    </div>
+
+  </main>
+
+  <!-- JAVASCRIPT FOR THE GLOBAL MAP & SERVER DATA NETWORK -->
+  <script>
+    const canvas = document.getElementById('network-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let width, height;
+    
+    function resize() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+
+    // Server Node Class (Representing data centers)
+    class ServerNode {
+      constructor(x, y, type = 'normal') {
+        this.x = x;
+        this.y = y;
+        this.type = type;
+        this.size = type === 'hub' ? 6 : 3;
+        this.pulse = Math.random() * Math.PI * 2; // For glowing pulse
+      }
+
+      draw() {
+        // Draw the server rack (a simple rectangle with inner lines for detail)
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        
+        // Glow effect
+        this.pulse += 0.05;
+        const glowAlpha = 0.4 + Math.sin(this.pulse) * 0.3;
+        
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = `rgba(0, 0, 254, ${glowAlpha})`;
+        
+        // Base Rack
+        ctx.fillStyle = '#000000';
+        ctx.strokeStyle = '#0000fe';
+        ctx.lineWidth = 1.5;
+        
+        const w = this.size * 2;
+        const h = this.size * 3;
+        
+        ctx.beginPath();
+        ctx.rect(-w/2, -h/2, w, h);
+        ctx.fill();
+        ctx.stroke();
+
+        // Inner server lines (details)
+        ctx.strokeStyle = `rgba(0, 0, 254, ${glowAlpha + 0.2})`;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(-w/2 + 2, -h/2 + 3);
+        ctx.lineTo(w/2 - 2, -h/2 + 3);
+        ctx.moveTo(-w/2 + 2, 0);
+        ctx.lineTo(w/2 - 2, 0);
+        ctx.moveTo(-w/2 + 2, h/2 - 3);
+        ctx.lineTo(w/2 - 2, h/2 - 3);
+        ctx.stroke();
+
+        ctx.restore();
+      }
+    }
+
+    // Data Packet Class (Moving between servers)
+    class DataPacket {
+      constructor(startNode, endNode) {
+        this.start = startNode;
+        this.end = endNode;
+        this.progress = 0;
+        this.speed = 0.005 + Math.random() * 0.01; // Varying speeds
+        this.size = Math.random() * 2 + 1;
+        this.curved = Math.random() > 0.5; // Some arc, some straight
+        this.curveOffset = (Math.random() - 0.5) * 100;
+      }
+
+      update() {
+        this.progress += this.speed;
+        if (this.progress >= 1) {
+          this.progress = 0;
+          // Randomly pick a new destination from available nodes
+          if (nodes.length > 0) {
+             let newEnd = nodes[Math.floor(Math.random() * nodes.length)];
+             while (newEnd === this.start && nodes.length > 1) {
+               newEnd = nodes[Math.floor(Math.random() * nodes.length)];
+             }
+             this.end = newEnd;
+          }
+        }
+      }
+
+      draw() {
+        let x, y;
+        
+        if (this.curved) {
+          // Quadratic bezier curve for a globe-traversing look
+          const midX = (this.start.x + this.end.x) / 2;
+          const midY = (this.start.y + this.end.y) / 2 - this.curveOffset;
+          
+          // Calculate point on quadratic bezier curve
+          const t = this.progress;
+          x = (1 - t) * (1 - t) * this.start.x + 2 * (1 - t) * t * midX + t * t * this.end.x;
+          y = (1 - t) * (1 - t) * this.start.y + 2 * (1 - t) * t * midY + t * t * this.end.y;
+        } else {
+          // Straight line (fibre optic)
+          x = this.start.x + (this.end.x - this.start.x) * this.progress;
+          y = this.start.y + (this.end.y - this.start.y) * this.progress;
+        }
+
+        ctx.beginPath();
+        ctx.arc(x, y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = '#0000fe';
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = '#0000fe';
+        ctx.fill();
+        ctx.shadowBlur = 0; // Reset
+      }
+    }
+
+    // Data Connections (Static lines showing routes)
+    function drawConnections() {
+      ctx.lineWidth = 0.5;
+      ctx.strokeStyle = 'rgba(0, 0, 254, 0.15)';
+      
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          // Only draw connections to nearby nodes to keep it clean
+          const dx = nodes[i].x - nodes[j].x;
+          const dy = nodes[i].y - nodes[j].y;
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          
+          if (dist < width * 0.3) {
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    // Global Map Logic (Stylized dots to represent continents)
+    // These coordinates roughly outline North America, Europe, Asia, South America, Africa, Australia
+    const mapDots = [];
+    const mapDensity = 300; // Number of dots on the map
+    
+    // Create a pseudo-random distribution that looks like continents
+    for (let i = 0; i < mapDensity; i++) {
+        // Use a deterministic random based on index to keep map stable on resize
+        const seed = Math.sin(i) * 10000;
+        const xRand = (seed - Math.floor(seed)) * width;
+        const yRand = ((seed * 1.5) - Math.floor(seed * 1.5)) * height;
+        
+        // Only keep dots in certain zones to approximate a world map
+        // This is a stylized approximation, not a real map.
+        const inNorthAmerica = (xRand > width*0.1 && xRand < width*0.35 && yRand > height*0.2 && yRand < height*0.6);
+        const inSouthAmerica = (xRand > width*0.25 && xRand < width*0.4 && yRand > height*0.5 && yRand < height*0.9);
+        const inEurope = (xRand > width*0.45 && xRand < width*0.6 && yRand > height*0.15 && yRand < height*0.45);
+        const inAfrica = (xRand > width*0.45 && xRand < width*0.6 && yRand > height*0.4 && yRand < height*0.8);
+        const inAsia = (xRand > width*0.6 && xRand < width*0.9 && yRand > height*0.15 && yRand < height*0.6);
+        const inAustralia = (xRand > width*0.75 && xRand < width*0.95 && yRand > height*0.65 && yRand < height*0.9);
+        
+        if (inNorthAmerica || inSouthAmerica || inEurope || inAfrica || inAsia || inAustralia) {
+            mapDots.push({x: xRand, y: yRand});
+        }
+    }
+
+    function drawMap() {
+      ctx.fillStyle = 'rgba(0, 0, 254, 0.2)'; // Faint blue dots for map
+      mapDots.forEach(dot => {
+        ctx.beginPath();
+        ctx.arc(dot.x, dot.y, 1, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+
+    // Setup Nodes (Servers)
+    const nodes = [];
+    
+    function initNodes() {
+      nodes.length = 0; // Clear
+      
+      // Place nodes near the map dots but with some randomness
+      // Central hubs (major data centers)
+      const hubs = [
+        {x: width * 0.2, y: height * 0.35}, // NA East
+        {x: width * 0.15, y: height * 0.45}, // NA West
+        {x: width * 0.5, y: height * 0.3},  // Europe
+        {x: width * 0.7, y: height * 0.4},  // Asia
+        {x: width * 0.8, y: height * 0.7},  // Australia
+        {x: width * 0.35, y: height * 0.65}  // SA
+      ];
+
+      hubs.forEach(hub => {
+        nodes.push(new ServerNode(hub.x, hub.y, 'hub'));
+      });
+
+      // Add extra random nodes in the defined regions
+      for (let i = 0; i < 20; i++) {
+        const region = mapDots[Math.floor(Math.random() * mapDots.length)];
+        if (region) {
+            // Add slight offset so servers don't perfectly overlap dots
+            const offsetX = (Math.random() - 0.5) * 40;
+            const offsetY = (Math.random() - 0.5) * 40;
+            nodes.push(new ServerNode(region.x + offsetX, region.y + offsetY, 'normal'));
+        }
+      }
+    }
+
+    // Initialize nodes after map dots are created
+    initNodes();
+
+    // Create data packets
+    const packets = [];
+    for (let i = 0; i < 30; i++) {
+      const start = nodes[Math.floor(Math.random() * nodes.length)];
+      const end = nodes[Math.floor(Math.random() * nodes.length)];
+      if (start && end && start !== end) {
+        packets.push(new DataPacket(start, end));
+      }
+    }
+
+    // Animation Loop
+    function animate() {
+      // Clear with a solid black background (prevents trails)
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0, 0, width, height);
+
+      // Draw the stylized world map
+      drawMap();
+
+      // Draw connections between servers
+      drawConnections();
+
+      // Draw and update servers
+      nodes.forEach(node => {
+        node.draw();
+      });
+
+      // Draw and update data packets
+      packets.forEach(packet => {
+        packet.update();
+        packet.draw();
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    // Handle resize to recalculate map and node positions
+    window.addEventListener('resize', () => {
+        resize();
+        
+        // Recalculate map dots
+        mapDots.length = 0;
+        for (let i = 0; i < mapDensity; i++) {
+            const seed = Math.sin(i) * 10000;
+            const xRand = (seed - Math.floor(seed)) * width;
+            const yRand = ((seed * 1.5) - Math.floor(seed * 1.5)) * height;
+            
+            const inNorthAmerica = (xRand > width*0.1 && xRand < width*0.35 && yRand > height*0.2 && yRand < height*0.6);
+            const inSouthAmerica = (xRand > width*0.25 && xRand < width*0.4 && yRand > height*0.5 && yRand < height*0.9);
+            const inEurope = (xRand > width*0.45 && xRand < width*0.6 && yRand > height*0.15 && yRand < height*0.45);
+            const inAfrica = (xRand > width*0.45 && xRand < width*0.6 && yRand > height*0.4 && yRand < height*0.8);
+            const inAsia = (xRand > width*0.6 && xRand < width*0.9 && yRand > height*0.15 && yRand < height*0.6);
+            const inAustralia = (xRand > width*0.75 && xRand < width*0.95 && yRand > height*0.65 && yRand < height*0.9);
+            
+            if (inNorthAmerica || inSouthAmerica || inEurope || inAfrica || inAsia || inAustralia) {
+                mapDots.push({x: xRand, y: yRand});
+            }
+        }
+
+        // Re-initialize nodes based on new dimensions
+        initNodes();
+    });
+
+    // Start animation
+    animate();
+  </script>
+</body>
+</html>
