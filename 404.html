@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- META REFRESH: Redirects to the main domain after 5 seconds -->
+  <meta http-equiv="refresh" content="5;url=https://bigfuckingservers.com">
+  
+  <title>404 — BigFuckingServers</title>
+  
+  <!-- Google Fonts: Inter for ultra-modern, sleek typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome for flat tech icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* GLOBAL RESET & VARIABLES */
+    :root {
+      --electric-blue: #0000fe;
+      --pure-black: #000000;
+      --white: #ffffff;
+      --gray-text: #a0a0a0;
+      --blue-glow: 0 0 20px rgba(0, 0, 254, 0.6);
+      --blue-glow-strong: 0 0 35px rgba(0, 0, 254, 0.9);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* CUSTOM SCROLLBAR - WEBKIT */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--pure-black);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--electric-blue);
+      border-radius: 5px;
+      border: 2px solid var(--pure-black);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #1a1aff;
+      box-shadow: var(--blue-glow);
+    }
+
+    /* CUSTOM SCROLLBAR - FIREFOX */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--electric-blue) var(--pure-black);
+    }
+
+    body {
+      background-color: var(--pure-black);
+      color: var(--white);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.5;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* CANVAS BACKGROUND */
+    #network-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none; 
+      opacity: 0.6;
+    }
+
+    /* CONTAINER */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      background: radial-gradient(circle at center, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 60%, rgba(0,0,0,0) 100%);
+      width: 100%;
+    }
+
+    /* LOGO */
+    .logo-wrapper {
+      margin-bottom: 2rem;
+      animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      opacity: 0;
+    }
+
+    .logo-wrapper img {
+      max-width: 260px;
+      width: 100%;
+      height: auto;
+      filter: drop-shadow(0 0 20px rgba(0, 0, 254, 0.5));
+      transition: transform 0.3s ease, filter 0.3s ease;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 12px;
+      padding: 10px;
+      backdrop-filter: blur(4px);
+    }
+
+    .logo-wrapper img:hover {
+      transform: scale(1.03);
+      filter: drop-shadow(0 0 35px rgba(0, 0, 254, 0.9));
+    }
+
+    /* 404 HEADER */
+    .error-code {
+      font-size: clamp(5rem, 15vw, 12rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.05em;
+      color: var(--electric-blue);
+      text-shadow: var(--blue-glow-strong);
+      margin-bottom: 1rem;
+      animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+      opacity: 0;
+    }
+
+    .error-title {
+      font-size: clamp(1.5rem, 3vw, 2.5rem);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+      animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+      opacity: 0;
+    }
+
+    .error-message {
+      font-size: 1.2rem;
+      color: var(--gray-text);
+      max-width: 600px;
+      margin-bottom: 2rem;
+      animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+      opacity: 0;
+    }
+
+    .redirect-banner {
+      background: rgba(0, 0, 254, 0.1);
+      border: 1px dashed var(--electric-blue);
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      margin-bottom: 3rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-weight: 600;
+      animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
+      opacity: 0;
+      box-shadow: inset 0 0 20px rgba(0, 0, 254, 0.1);
+    }
+
+    .redirect-banner i {
+      color: var(--electric-blue);
+      font-size: 1.2rem;
+      animation: pulse 1s infinite alternate;
+    }
+
+    .redirect-banner span {
+      color: var(--electric-blue);
+      font-weight: 800;
+      font-size: 1.2rem;
+      margin-left: 0.5rem;
+    }
+
+    /* STATS GRID */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      width: 100%;
+      margin-bottom: 4rem;
+      animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+      opacity: 0;
+    }
+
+    .stat-card {
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(0, 0, 254, 0.4);
+      padding: 2rem 1.5rem;
+      border-radius: 8px;
+      position: relative;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--electric-blue);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+
+    .stat-card:hover {
+      border-color: var(--electric-blue);
+      box-shadow: var(--blue-glow);
+      transform: translateY(-3px);
+    }
+
+    .stat-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .stat-icon {
+      font-size: 2rem;
+      color: var(--electric-blue);
+      margin-bottom: 1rem;
+      filter: drop-shadow(0 0 8px rgba(0, 0, 254, 0.5));
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: var(--white);
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-number .unit {
+      font-size: 1rem;
+      color: var(--electric-blue);
+      font-weight: 800;
+      margin-left: 2px;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--gray-text);
+      font-weight: 600;
+    }
+
+    /* FOOTER */
+    .footer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
+      opacity: 0;
+    }
+
+    .footer-domain {
+      font-size: 1.2rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .footer-domain i {
+      color: var(--electric-blue);
+    }
+
+    .footer-email {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--gray-text);
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+    }
+
+    .footer-email i {
+      color: var(--electric-blue);
+    }
+
+    .footer-email:hover {
+      color: var(--white);
+      background: rgba(0, 0, 254, 0.15);
+      text-shadow: 0 0 10px rgba(0, 0, 254, 0.8);
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0.5; transform: scale(0.9); }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      .redirect-banner {
+        flex-direction: column;
+        text-align: center;
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CANVAS FOR THE GLOBAL MAP & SERVER DATA NETWORK -->
+  <canvas id="network-canvas"></canvas>
+
+  <main class="container">
+    
+    <!-- LOGO -->
+    <div class="logo-wrapper">
+      <img src="./img/BFS_logo_transparent_cropped.png" alt="BigFuckingServers Logo">
+    </div>
+
+    <div class="error-code">404</div>
+    <h1 class="error-title">Route Not Found</h1>
+    <p class="error-message">
+      The IP transit path you are trying to reach does not exist or has been migrated. 
+      The data packet has been dropped.
+    </p>
+
+    <div class="redirect-banner">
+      <i class="fas fa-sync-alt"></i>
+      <div>Rerouting to main network in <span id="countdown">5</span> seconds...</div>
+    </div>
+
+    <!-- STATS GRID -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <i class="fas fa-network-wired stat-icon"></i>
+        <div class="stat-number">10.1<span class="unit">TBPS</span></div>
+        <div class="stat-label">Avg Continuous Usage</div>
+      </div>
+
+      <div class="stat-card">
+        <i class="fas fa-globe stat-icon"></i>
+        <div class="stat-number">3000<span class="unit">+</span></div>
+        <div class="stat-label">IP Transit Locations</div>
+      </div>
+
+      <div class="stat-card">
+        <i class="fas fa-tachometer-alt stat-icon"></i>
+        <div class="stat-number">400<span class="unit">Gbps</span></div>
+        <div class="stat-label">MAX Port Speed</div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <div class="footer-domain">
+        <i class="fas fa-bolt"></i>
+        BigFuckingServers.com
+        <i class="fas fa-bolt"></i>
+      </div>
+      
+      <a href="mailto:sales@bigfuckingservers.com" class="footer-email">
+        <i class="fas fa-envelope"></i>
+        sales@bigfuckingservers.com
+      </a>
+    </div>
+
+  </main>
+
+  <!-- JAVASCRIPT FOR COUNTDOWN AND BACKGROUND ANIMATION -->
+  <script>
+    // 1. Countdown Timer Logic
+    let timeLeft = 5;
+    const countdownEl = document.getElementById('countdown');
+    
+    const timer = setInterval(() => {
+      timeLeft--;
+      countdownEl.textContent = timeLeft;
+      
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+      }
+    }, 1000);
+
+    // 2. Background Animation Logic (Global Map & Servers)
+    const canvas = document.getElementById('network-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let width, height;
+    
+    function resize() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+
+    class ServerNode {
+      constructor(x, y, type = 'normal') {
+        this.x = x;
+        this.y = y;
+        this.type = type;
+        this.size = type === 'hub' ? 5 : 2.5;
+        this.pulse = Math.random() * Math.PI * 2; 
+      }
+
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        
+        this.pulse += 0.05;
+        const glowAlpha = 0.4 + Math.sin(this.pulse) * 0.3;
+        
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = `rgba(0, 0, 254, ${glowAlpha})`;
+        
+        ctx.fillStyle = '#000000';
+        ctx.strokeStyle = '#0000fe';
+        ctx.lineWidth = 1.5;
+        
+        const w = this.size * 2;
+        const h = this.size * 3;
+        
+        ctx.beginPath();
+        ctx.rect(-w/2, -h/2, w, h);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.strokeStyle = `rgba(0, 0, 254, ${glowAlpha + 0.2})`;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(-w/2 + 2, -h/2 + 3);
+        ctx.lineTo(w/2 - 2, -h/2 + 3);
+        ctx.moveTo(-w/2 + 2, 0);
+        ctx.lineTo(w/2 - 2, 0);
+        ctx.moveTo(-w/2 + 2, h/2 - 3);
+        ctx.lineTo(w/2 - 2, h/2 - 3);
+        ctx.stroke();
+
+        ctx.restore();
+      }
+    }
+
+    class DataPacket {
+      constructor(startNode, endNode) {
+        this.start = startNode;
+        this.end = endNode;
+        this.progress = 0;
+        this.speed = 0.005 + Math.random() * 0.01; 
+        this.size = Math.random() * 2 + 1;
+        this.curved = Math.random() > 0.5; 
+        this.curveOffset = (Math.random() - 0.5) * 100;
+      }
+
+      update() {
+        this.progress += this.speed;
+        if (this.progress >= 1) {
+          this.progress = 0;
+          if (nodes.length > 0) {
+             let newEnd = nodes[Math.floor(Math.random() * nodes.length)];
+             while (newEnd === this.start && nodes.length > 1) {
+               newEnd = nodes[Math.floor(Math.random() * nodes.length)];
+             }
+             this.end = newEnd;
+          }
+        }
+      }
+
+      draw() {
+        let x, y;
+        if (this.curved) {
+          const midX = (this.start.x + this.end.x) / 2;
+          const midY = (this.start.y + this.end.y) / 2 - this.curveOffset;
+          const t = this.progress;
+          x = (1 - t) * (1 - t) * this.start.x + 2 * (1 - t) * t * midX + t * t * this.end.x;
+          y = (1 - t) * (1 - t) * this.start.y + 2 * (1 - t) * t * midY + t * t * this.end.y;
+        } else {
+          x = this.start.x + (this.end.x - this.start.x) * this.progress;
+          y = this.start.y + (this.end.y - this.start.y) * this.progress;
+        }
+
+        ctx.beginPath();
+        ctx.arc(x, y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = '#0000fe';
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = '#0000fe';
+        ctx.fill();
+        ctx.shadowBlur = 0; 
+      }
+    }
+
+    function drawConnections() {
+      ctx.lineWidth = 0.5;
+      ctx.strokeStyle = 'rgba(0, 0, 254, 0.15)';
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const dx = nodes[i].x - nodes[j].x;
+          const dy = nodes[i].y - nodes[j].y;
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < width * 0.25) {
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    const mapDots = [];
+    const mapDensity = 250; 
+    
+    for (let i = 0; i < mapDensity; i++) {
+        const seed = Math.sin(i) * 10000;
+        const xRand = (seed - Math.floor(seed)) * width;
+        const yRand = ((seed * 1.5) - Math.floor(seed * 1.5)) * height;
+        
+        const inNorthAmerica = (xRand > width*0.1 && xRand < width*0.35 && yRand > height*0.2 && yRand < height*0.6);
+        const inSouthAmerica = (xRand > width*0.25 && xRand < width*0.4 && yRand > height*0.5 && yRand < height*0.9);
+        const inEurope = (xRand > width*0.45 && xRand < width*0.6 && yRand > height*0.15 && yRand < height*0.45);
+        const inAfrica = (xRand > width*0.45 && xRand < width*0.6 && yRand > height*0.4 && yRand < height*0.8);
+        const inAsia = (xRand > width*0.6 && xRand < width*0.9 && yRand > height*0.15 && yRand < height*0.6);
+        const inAustralia = (xRand > width*0.75 && xRand < width*0.95 && yRand > height*0.65 && yRand < height*0.9);
+        
+        if (inNorthAmerica || inSouthAmerica || inEurope || inAfrica || inAsia || inAustralia) {
+            mapDots.push({x: xRand, y: yRand});
+        }
+    }
+
+    function drawMap() {
+      ctx.fillStyle = 'rgba(0, 0, 254, 0.2)'; 
+      mapDots.forEach(dot => {
+        ctx.beginPath();
+        ctx.arc(dot.x, dot.y, 1, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+
+    const nodes = [];
+    
+    function initNodes() {
+      nodes.length = 0; 
+      const hubs = [
+        {x: width * 0.2, y: height * 0.35}, 
+        {x: width * 0.15, y: height * 0.45}, 
+        {x: width * 0.5, y: height * 0.3},  
+        {x: width * 0.7, y: height * 0.4},  
+        {x: width * 0.8, y: height * 0.7},  
+        {x: width * 0.35, y: height * 0.65}  
+      ];
+
+      hubs.forEach(hub => {
+        nodes.push(new ServerNode(hub.x, hub.y, 'hub'));
+      });
+
+      for (let i = 0; i < 15; i++) {
+        const region = mapDots[Math.floor(Math.random() * mapDots.length)];
+        if (region) {
+            const offsetX = (Math.random() - 0.5) * 40;
+            const offsetY = (Math.random() - 0.5) * 40;
+            nodes.push(new ServerNode(region.x + offsetX, region.y + offsetY, 'normal'));
+        }
+      }
+    }
+
+    initNodes();
+
+    const packets = [];
+    for (let i = 0; i < 25; i++) {
+      const start = nodes[Math.floor(Math.random() * nodes.length)];
+      const end = nodes[Math.floor(Math.random() * nodes.length)];
+      if (start && end && start !== end) {
+        packets.push(new DataPacket(start, end));
+      }
+    }
+
+    function animate() {
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0, 0, width, height);
+
+      drawMap();
+      drawConnections();
+
+      nodes.forEach(node => node.draw());
+      packets.forEach(packet => {
+        packet.update();
+        packet.draw();
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', () => {
+        resize();
+        mapDots.length = 0;
+        for (let i = 0; i < mapDensity; i++) {
+            const seed = Math.sin(i) * 10000;
+            const xRand = (seed - Math.floor(seed)) * width;
+            const yRand = ((seed * 1.5) - Math.floor(seed * 1.5)) * height;
+            
+            const inNorthAmerica = (xRand > width*0.1 && xRand < width*0.35 && yRand > height*0.2 && yRand < height*0.6);
+            const inSouthAmerica = (xRand > width*0.25 && xRand < width*0.4 && yRand > height*0.5 && yRand < height*0.9);
+            const inEurope = (xRand > width*0.45 && xRand < width*0.6 && yRand > height*0.15 && yRand < height*0.45);
+            const inAfrica = (xRand > width*0.45 && xRand < width*0.6 && yRand > height*0.4 && yRand < height*0.8);
+            const inAsia = (xRand > width*0.6 && xRand < width*0.9 && yRand > height*0.15 && yRand < height*0.6);
+            const inAustralia = (xRand > width*0.75 && xRand < width*0.95 && yRand > height*0.65 && yRand < height*0.9);
+            
+            if (inNorthAmerica || inSouthAmerica || inEurope || inAfrica || inAsia || inAustralia) {
+                mapDots.push({x: xRand, y: yRand});
+            }
+        }
+        initNodes();
+    });
+
+    animate();
+  </script>
+</body>
+</html>
